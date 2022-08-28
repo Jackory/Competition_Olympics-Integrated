@@ -70,6 +70,35 @@ class wrestling(OlympicsBase):
 
         return action
 
+    def get_obs(self):
+        lx, ly = self.agent_pos[0]
+        lxv, lyv = self.agent_v[0]
+        lxa, lya = self.agent_accel[0]
+
+        rx, ry = self.agent_pos[1]
+        rxv, ryv = self.agent_v[1]
+        rxa, rya = self.agent_accel[1]
+
+        # bx, by = self.agent_pos[2]
+        # bxv, byv = self.agent_v[2]
+        # bxa, bya = self.agent_accel[2]
+
+        l_energy = self.agent_list[0].energy
+        r_energy = self.agent_list[1].energy
+
+        l_obs = [
+            lx - 300, ly - 350, lxv, lyv, lxa, lya,
+            rx - 300, ry - 350, rxv, ryv, rxa, rya,
+            l_energy, r_energy
+        ]
+        
+        r_obs = [
+            -(rx - 300), -(ry - 350), -rxv, -ryv, -rxa, -rya,
+            -(lx - 300), -(ly - 350), -lxv, -lyv, -lxa, -lya,
+            l_energy, r_energy
+        ]
+        return [l_obs, r_obs]
+
     def step(self, actions_list):
         previous_pos = self.agent_pos
 
@@ -210,10 +239,10 @@ class wrestling(OlympicsBase):
                 if self.draw_obs:
                     self.viewer.draw_obs(self.obs_boundary, self.agent_list)
 
-        if self.draw_obs:
-            if len(self.obs_list) > 0:
-                self.viewer.draw_view(self.obs_list, self.agent_list, leftmost_x=470, upmost_y=10, gap=130,
-                                      energy_width=0 if self.beauty_render else 5)
+        # if self.draw_obs:
+        #     if len(self.obs_list) > 0:
+        #         self.viewer.draw_view(self.obs_list, self.agent_list, leftmost_x=470, upmost_y=10, gap=130,
+        #                               energy_width=0 if self.beauty_render else 5)
 
         if self.show_traj:
             self.get_trajectory()
