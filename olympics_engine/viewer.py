@@ -9,7 +9,7 @@ grid_node_height = 2
 
 class Viewer():
     def __init__(self, setting):
-        pygame.init()
+        # pygame.init()
         width = setting["width"]
         height = setting["height"]
         edge = setting["edge"]
@@ -205,7 +205,7 @@ class Viewer():
 
 
 
-pygame.init()
+pygame.font.init()
 font = pygame.font.Font(None, 18)
 def debug(info, y = 10, x=10, c='black'):
     display_surf = pygame.display.get_surface()
