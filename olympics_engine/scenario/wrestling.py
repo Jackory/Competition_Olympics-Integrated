@@ -185,13 +185,13 @@ class wrestling(OlympicsBase):
         agent1_finished = self.agent_list[0].finished
         agent2_finished = self.agent_list[1].finished
         if agent1_finished and agent2_finished:
-            return [0., 0]
+            return [0., 0.]
         elif agent1_finished and not agent2_finished:
-            return [0., 1]
+            return [-1., 1.]
         elif not agent1_finished and agent2_finished:
-            return [1., 0]
+            return [1., -1.]
         else:
-            return [0,0]
+            return [0., 0.]
 
     def is_terminal(self):
 
