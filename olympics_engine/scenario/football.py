@@ -8,6 +8,7 @@ from pathlib import Path
 CURRENT_PATH = str(Path(__file__).resolve().parent.parent)
 import math
 import random
+from gym.spaces import Box
 
 class football(OlympicsBase):
     def __init__(self, map, minimap=False):
@@ -38,14 +39,52 @@ class football(OlympicsBase):
 
         self.print_log = False
 
-        self.draw_obs = True
+        self.draw_obs = False
         self.show_traj = False
         self.beauty_render = False
+
+        self.observation_space = Box(low=0., high=100., shape=(20,))
 
     def check_overlap(self):
         pass
 
+    def get_obs(self):
+        lx, ly = self.agent_pos[0]
+        lxv, lyv = self.agent_v[0]
+        lxa, lya = self.agent_accel[0]
 
+        rx, ry = self.agent_pos[1]
+        rxv, ryv = self.agent_v[1]
+        rxa, rya = self.agent_accel[1]
+
+        bx, by = self.agent_pos[2]
+        bxv, byv = self.agent_v[2]
+        bxa, bya = self.agent_accel[2]
+
+        l_energy = self.agent_list[0].energy
+        r_energy = self.agent_list[1].energy
+
+        # norm obs
+        lx, ly, rx, ry, bx, by = lx / 20, ly / 20, rx / 20, ry / 20, bx / 20, by / 20
+        lxv, lyv, rxv, ryv, bxv, byv = lxv / 10, lyv / 10, rxv / 10, ryv / 10, bxv / 10, byv / 10
+        lxa, lya, rxa, rya, bxa, bya = lxa / 20, lya / 20, rxa / 20, rya / 20, bxa / 20, bya / 20
+
+        l_obs = [
+            lx - 350 / 20, ly - 200 / 20, lxv, lyv, lxa, lya,
+            rx - 350 / 20, ry - 200 / 20, rxv, ryv, rxa, rya,
+            bx - 350 / 20, by - 200 / 20, bxv, byv, bxa, bya,
+            l_energy / 100, r_energy / 100
+        ]
+        
+        r_obs = [
+            -(rx - 350 / 20), ry - 200 / 20, -rxv, ryv, -rxa, rya,
+            -(lx - 350 / 20), ly - 200 / 20, -lxv, lyv, -lxa, lya,
+            bx - 350 / 20, by - 200 / 20, bxv, byv, bxa, bya,
+            l_energy / 100, r_energy / 100
+        ]
+
+        return [l_obs, r_obs]
+        
     def reset(self):
         self.set_seed()
         self.init_state()
@@ -169,10 +208,10 @@ class football(OlympicsBase):
                 ball_end_pos = self.agent_pos[agent_idx]
 
         if ball_end_pos is not None and ball_end_pos[0] < 400:
-            return [0., 1]
+            return [-1., 1.]
 
         elif ball_end_pos is not None and ball_end_pos[0] > 400:
-            return [1., 0]
+            return [1., -1.]
         else:
             return [0. ,0.]
 

@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 CURRENT_PATH = str(Path(__file__).resolve().parent.parent)
 import math
+from gym.spaces import Box
 
 
 def point2point(p1, p2):
@@ -32,9 +33,10 @@ class wrestling(OlympicsBase):
         self.max_step = map['env_cfg']['max_step']
         self.print_log = False
 
-        self.draw_obs = True
+        self.draw_obs = False
         self.show_traj = False
         self.beauty_render = False
+        self.observation_space = Box(low=0., high=100., shape=(14,))
 
 
     def check_overlap(self):
@@ -83,18 +85,23 @@ class wrestling(OlympicsBase):
         # bxv, byv = self.agent_v[2]
         # bxa, bya = self.agent_accel[2]
 
-        l_energy = self.agent_list[0].energy
-        r_energy = self.agent_list[1].energy
+        # norm obs
+        lx, ly, rx, ry = lx / 20, ly / 20, rx / 20, ry / 20
+        lxv, lyv, rxv, ryv = lxv / 10, lyv / 10, rxv / 10, ryv / 10
+        lxa, lya, rxa, rya = lxa / 20, lya / 20, rxa / 20, rya / 20
+
+        l_energy = self.agent_list[0].energy / 100
+        r_energy = self.agent_list[1].energy / 100
 
         l_obs = [
-            lx - 300, ly - 350, lxv, lyv, lxa, lya,
-            rx - 300, ry - 350, rxv, ryv, rxa, rya,
+            lx - 300 / 20, ly - 350 / 20, lxv, lyv, lxa, lya,
+            rx - 300 / 20, ry - 350 / 20, rxv, ryv, rxa, rya,
             l_energy, r_energy
         ]
         
         r_obs = [
-            -(rx - 300), -(ry - 350), -rxv, -ryv, -rxa, -rya,
-            -(lx - 300), -(ly - 350), -lxv, -lyv, -lxa, -lya,
+            -(rx - 300 / 20), -(ry - 350 / 20), -rxv, -ryv, -rxa, -rya,
+            -(lx - 300 / 20), -(ly - 350 / 20), -lxv, -lyv, -lxa, -lya,
             l_energy, r_energy
         ]
         return [l_obs, r_obs]
