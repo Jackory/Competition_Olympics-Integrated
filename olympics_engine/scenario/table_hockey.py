@@ -67,8 +67,8 @@ class table_hockey(OlympicsBase):
         bxv, byv = self.agent_v[2]
         bxa, bya = self.agent_accel[2]
 
-        l_energy = self.agent_list[0].energy
-        r_energy = self.agent_list[1].energy
+        l_energy = self.agent_list[0].energy / 100
+        r_energy = self.agent_list[1].energy / 100
 
         # norm obs
         lx, ly, rx, ry, bx, by = lx / 20, ly / 20, rx / 20, ry / 20, bx / 20, by / 20
@@ -79,14 +79,14 @@ class table_hockey(OlympicsBase):
             lx - 350 / 20, ly - 200 / 20, lxv, lyv, lxa, lya,
             rx - 350 / 20, ry - 200 / 20, rxv, ryv, rxa, rya,
             bx - 350 / 20, by - 200 / 20, bxv, byv, bxa, bya,
-            l_energy / 100, r_energy / 100
+            l_energy, r_energy
         ]
         
         r_obs = [
-            -(rx - 350 / 20), ry - 200 / 20, -rxv, ryv, -rxa, rya,
-            -(lx - 350 / 20), ly - 200 / 20, -lxv, lyv, -lxa, lya,
+            rx - 350 / 20, ry - 200 / 20, rxv, ryv, rxa, rya,
+            lx - 350 / 20, ly - 200 / 20, lxv, lyv, lxa, lya,
             bx - 350 / 20, by - 200 / 20, bxv, byv, bxa, bya,
-            l_energy / 100, r_energy / 100
+            l_energy, r_energy
         ]
 
         return [l_obs, r_obs]

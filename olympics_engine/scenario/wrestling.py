@@ -100,8 +100,8 @@ class wrestling(OlympicsBase):
         ]
         
         r_obs = [
-            -(rx - 300 / 20), -(ry - 350 / 20), -rxv, -ryv, -rxa, -rya,
-            -(lx - 300 / 20), -(ly - 350 / 20), -lxv, -lyv, -lxa, -lya,
+            rx - 300 / 20, ry - 350 / 20, rxv, ryv, rxa, rya,
+            lx - 300 / 20, ly - 350 / 20, lxv, lyv, lxa, lya,
             l_energy, r_energy
         ]
         return [l_obs, r_obs]
